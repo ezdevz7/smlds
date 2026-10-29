@@ -1,0 +1,117 @@
+1. Aim
+
+To implement Maximum Likelihood Estimation (MLE) using the Iris dataset to estimate the mean and variance of a feature.
+
+2. Dataset Link
+
+https://www.kaggle.com/datasets/uciml/iris
+
+Download the dataset and extract the CSV file.
+
+
+CODE - 
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+
+file_path = r""
+
+
+
+df = pd.read_csv(file_path)
+print(df.head())
+print(df.columns)
+
+
+
+
+data = df['PetalLengthCm'].dropna().values
+print("Number of observations:", len(data))
+
+
+
+
+
+n = len(data)
+
+# Maximum Likelihood Estimate of Mean
+mle_mean = np.mean(data)
+
+# Maximum Likelihood Estimate of Variance
+mle_variance = np.sum((data - mle_mean) ** 2) / n
+
+print("MLE of Mean:", mle_mean)
+print("MLE of Variance:", mle_variance)
+
+
+
+
+
+plt.hist(data, bins=15, density=True, edgecolor='black')
+
+plt.xlabel("Petal Length")
+plt.ylabel("Density")
+plt.title("Distribution of Iris Petal Length")
+plt.show()
+
+
+
+
+
+
+x = np.linspace(min(data), max(data), 200)
+
+std_dev = np.sqrt(mle_variance)
+
+pdf = (1 / (std_dev * np.sqrt(2 * np.pi))) * np.exp(
+    -0.5 * ((x - mle_mean) / std_dev) ** 2
+)
+
+plt.hist(data, bins=15, density=True, alpha=0.6, edgecolor='black')
+plt.plot(x, pdf, linewidth=2)
+
+plt.xlabel("Petal Length")
+plt.ylabel("Density")
+plt.title("MLE-Fitted Normal Distribution")
+plt.show()
+
+
+
+
+
+4. Theory
+
+Maximum Likelihood Estimation (MLE) is a statistical method used to estimate the parameters of a probability distribution by finding the values that make the observed data most likely.
+
+Steps
+Select the dataset and feature.
+Assume a probability distribution for the data.
+Define the likelihood function.
+Estimate the parameters that maximize the likelihood.
+Interpret the estimated parameters.
+
+For normally distributed data, the MLE of the mean is:
+
+$$ \hat{\mu}=\frac{1}{n}\sum_{i=1}^{n}x_i $$
+
+The MLE of the variance is:
+
+$$ \hat{\sigma}^2=\frac{1}{n}\sum_{i=1}^{n}(x_i-\hat{\mu})^2 $$
+
+Where:
+
+\(n\) = number of observations
+\(x_i\) = individual observation
+\(\hat{\mu}\) = estimated mean
+\(\hat{\sigma}^2\) = estimated variance
+
+Note: MLE variance uses \(n\) as the denominator, whereas the usual unbiased sample variance uses \(n-1\).
+
+
+
+5. Conclusion
+
+Maximum Likelihood Estimation was implemented on the Iris dataset to estimate the mean and variance of petal length. The estimated normal distribution was plotted to visualize how the fitted distribution represents the observed data.

@@ -1,0 +1,121 @@
+1. Aim
+
+To plot clusters in a dataset using the K-Means clustering algorithm.
+
+2. Dataset Link
+
+https://www.kaggle.com/datasets/rakeshrau/social-network-ads
+
+Download and extract Social_Network_Ads.csv.
+
+
+CODE - 
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+
+file_path = r""
+
+
+df = pd.read_csv(file_path)
+print(df.head())
+print(df.columns)
+
+
+
+X = df[['Age', 'EstimatedSalary']]
+print(X.head())
+
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+
+
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+df['Cluster'] = kmeans.fit_predict(X_scaled)
+print(df[['Age', 'EstimatedSalary', 'Cluster']].head())
+
+
+
+
+
+
+plt.figure(figsize=(8, 5))
+
+plt.scatter(
+    df['Age'],
+    df['EstimatedSalary'],
+    c=df['Cluster'],
+    cmap='viridis'
+)
+
+plt.xlabel('Age')
+plt.ylabel('Estimated Salary')
+plt.title('K-Means Clustering on Social Network Ads Dataset')
+plt.show()
+
+
+
+
+
+
+centers = scaler.inverse_transform(kmeans.cluster_centers_)
+
+plt.figure(figsize=(8, 5))
+
+plt.scatter(
+    df['Age'],
+    df['EstimatedSalary'],
+    c=df['Cluster'],
+    cmap='viridis'
+)
+
+plt.scatter(
+    centers[:, 0],
+    centers[:, 1],
+    marker='X',
+    s=200,
+    label='Cluster Centers'
+)
+
+plt.xlabel('Age')
+plt.ylabel('Estimated Salary')
+plt.title('K-Means Clusters with Centroids')
+plt.legend()
+plt.show()
+
+
+
+
+
+4. Theory
+
+K-Means clustering is an unsupervised machine learning algorithm that divides data into a specified number of clusters based on similarity.
+
+Steps of K-Means
+Choose the number of clusters \(K\).
+Initialize \(K\) cluster centers.
+Assign each data point to its nearest cluster center.
+Recalculate the centers using the mean of the assigned points.
+Repeat until the cluster assignments or centers stabilize.
+K-Means Objective Function
+$$ J=\sum_{i=1}^{K}\sum_{x\in C_i} \|x-\mu_i\|^2 $$
+
+Where:
+
+\(K\) = number of clusters
+\(C_i\) = data points in cluster \(i\)
+\(\mu_i\) = center of cluster \(i\)
+
+Standardization is performed because Age and Estimated Salary have different scales. It prevents the feature with larger numerical values from dominating the clustering process.
+
+
+
+5. Conclusion
+
+The K-Means clustering algorithm was applied to the Social Network Ads dataset using Age and Estimated Salary. The data points were divided into three clusters and visualized using a scatter plot. Cluster centers were also displayed to show the approximate center of each group.

@@ -1,0 +1,133 @@
+1. Aim
+
+To perform Simple Random Sampling and Stratified Sampling on the Penguin dataset.
+
+2. Dataset Link
+
+Kaggle — Palmer Archipelago Penguin Dataset
+
+https://www.kaggle.com/datasets/parulpandey/palmer-archipelago-antarctica-penguin-data
+
+
+CODE - 
+
+
+import pandas as pd
+import numpy as np
+
+
+
+file_path = r""
+
+
+
+df = pd.read_csv(file_path)
+print(df.head())
+
+
+
+df = df.dropna(subset=['species', 'body_mass_g'])
+
+df = df.reset_index(drop=True)
+
+print("Dataset size:", len(df))
+print(df['species'].value_counts())
+
+
+
+
+population_mean = df['body_mass_g'].mean()
+print("Population Mean Body Mass:", population_mean)
+
+
+
+
+sample_size = 100
+
+simple_sample = df.sample(
+    n=sample_size,
+    random_state=42
+)
+
+simple_mean = simple_sample['body_mass_g'].mean()
+
+print("Simple Random Sample Size:", len(simple_sample))
+print("Estimated Mean:", simple_mean)
+print("Absolute Error:", abs(simple_mean - population_mean))
+
+
+
+
+
+
+stratified_sample = (
+    df.groupby('species', group_keys=False)
+      .sample(frac=1, random_state=42)
+)
+
+stratified_sample = (
+    stratified_sample.groupby('species', group_keys=False)
+    .apply(lambda group: group.sample(
+        n=round(sample_size * len(group) / len(df)),
+        random_state=42
+    ))
+)
+
+
+
+
+stratified_mean = stratified_sample['body_mass_g'].mean()
+
+print("Stratified Sample Size:", len(stratified_sample))
+print("Estimated Mean:", stratified_mean)
+print("Absolute Error:", abs(stratified_mean - population_mean))
+
+
+
+
+
+results = pd.DataFrame({
+    'Method': ['Simple Random Sampling', 'Stratified Sampling'],
+    'Estimated Mean': [simple_mean, stratified_mean],
+    'Absolute Error': [
+        abs(simple_mean - population_mean),
+        abs(stratified_mean - population_mean)
+    ]
+})
+
+print(results)
+
+
+
+
+
+4. Theory
+
+Sampling is the process of selecting a subset of observations from a population to estimate population characteristics.
+
+1. Simple Random Sampling (SRS)
+Every observation has an equal chance of being selected.
+Samples are selected randomly from the entire dataset.
+It is easy to implement and understand.
+
+Example: Randomly selecting 100 penguins from the complete dataset.
+
+2. Stratified Sampling
+The population is divided into distinct groups called strata.
+A sample is selected from each group.
+Proportional sampling maintains approximately the same group proportions as the original population.
+
+Example: Dividing penguins by species and selecting penguins from each species.
+
+3. Comparison
+Simple random sampling selects individuals from the entire population.
+Stratified sampling ensures that every species is represented.
+Stratified sampling can improve estimates when the groups differ in body mass.
+
+
+
+5. Conclusion
+
+Simple random sampling and stratified sampling were performed on the Penguin dataset. Both methods were used to estimate the mean body mass, and their estimation errors were compared.
+
+Important: This experiment follows your exam aim, which requires only simple and stratified sampling. I have not included cluster sampling from the uploaded notebook.

@@ -1,0 +1,146 @@
+1. Aim
+
+To perform data preprocessing on a customer dataset by removing duplicate records, handling missing values, encoding categorical variables, detecting and treating outliers, and applying feature scaling techniques.
+
+DATASET - https://www.kaggle.com/datasets/shrutimechlearn/customer-data
+
+CODE -
+
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import LabelEncoder
+
+
+file_path = r""
+
+
+df = pd.read_csv(file_path)
+print(df.head())
+print(df.info())
+
+
+df = df.drop_duplicates()
+print("Duplicate rows removed.")
+
+
+print(df.isnull().sum())
+
+
+for col in df.select_dtypes(include='number').columns:
+    df[col] = df[col].fillna(df[col].median())
+for col in df.select_dtypes(include=['object', 'string']).columns:
+    if df[col].isnull().any():
+        mode_value = df[col].mode()
+
+        if not mode_value.empty:
+            df[col] = df[col].fillna(mode_value[0])
+
+print(df.isnull().sum())
+
+
+
+
+
+if 'Customer_Lifespan_Months' in df.columns:
+    df['Customer_Lifespan_Months'] = pd.to_numeric(
+        df['Customer_Lifespan_Months'],
+        errors='coerce'
+    )
+else:
+    print("Customer_Lifespan_Months column is not present.")
+
+
+
+
+
+
+if 'Date_of_Purchase' in df.columns:
+    df['Date_of_Purchase'] = pd.to_datetime(
+        df['Date_of_Purchase'],
+        errors='coerce'
+    )
+elif 'Dt_Customer' in df.columns:
+    df['Dt_Customer'] = pd.to_datetime(
+        df['Dt_Customer'],
+        errors='coerce',
+        dayfirst=True
+    )
+else:
+    print("No recognized date column found.")
+
+
+
+
+
+
+le = LabelEncoder()
+
+for col in df.select_dtypes(include=['object', 'string']).columns:
+    df[col] = le.fit_transform(df[col].astype(str))
+
+print(df.head())
+
+
+
+
+
+plt.figure(figsize=(8, 5))
+
+sns.boxplot(x=df['Annual_Income_(k$)'])
+
+plt.title("Box Plot of Annual Income")
+plt.show()
+
+
+
+
+
+Q1 = df['Annual_Income_(k$)'].quantile(0.25)
+Q3 = df['Annual_Income_(k$)'].quantile(0.75)
+
+IQR = Q3 - Q1
+
+lower = Q1 - 1.5 * IQR
+upper = Q3 + 1.5 * IQR
+
+outliers = df[
+    (df['Annual_Income_(k$)'] < lower) |
+    (df['Annual_Income_(k$)'] > upper)
+]
+
+print("Lower Bound:", lower)
+print("Upper Bound:", upper)
+print("Number of Outliers:", len(outliers))
+print("Outliers:")
+print(outliers[['CustomerID', 'Annual_Income_(k$)']])
+
+
+
+
+4. Theory
+
+Data preprocessing is the process of preparing raw data for analysis by improving its quality and consistency.
+
+Removing duplicates: Eliminates repeated records from the dataset.
+Handling invalid values: Converts invalid numerical entries such as "XXXX" to NaN using pd.to_numeric() with errors='coerce'.
+Date parsing: Converts date strings into datetime format using pd.to_datetime().
+Handling missing values: Fills missing numerical values using the median and categorical values using the mode.
+Label encoding: Converts categorical values into numerical labels using LabelEncoder.
+Box plots: Visually identify potential outliers in numerical data.
+IQR method: Identifies potential outliers below \(Q1-1.5(IQR)\) or above \(Q3+1.5(IQR)\), where \(IQR=Q3-Q1\).
+
+
+
+5. Conclusion
+
+Data preprocessing was performed by removing duplicates, handling missing and invalid values, parsing dates, encoding categorical data, and identifying potential outliers using box plots and the IQR method.
+
+Exam note: Your aim specifically mentions Customer_Lifespan_Months and "XXXX". The selected Kaggle dataset may not contain them. To demonstrate every required step exactly as written in the exam, we must use a dataset that actually contains those fields.
+
+
+
+
+

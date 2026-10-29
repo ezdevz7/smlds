@@ -1,0 +1,113 @@
+1. Aim
+
+To perform bootstrap resampling on the Iris dataset to estimate the mean petal length and calculate its 95% confidence interval.
+
+2. Dataset Link
+
+Kaggle — Iris Species Dataset
+
+https://www.kaggle.com/datasets/uciml/iris
+
+
+CODE -
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+
+file_path = r""
+
+
+df = pd.read_csv(file_path)
+print(df.head())
+
+
+data = df['PetalLengthCm'].dropna().values
+
+
+
+
+
+np.random.seed(42)
+
+n_boot = 5000
+boot_means = []
+
+for i in range(n_boot):
+    sample = np.random.choice(
+        data,
+        size=len(data),
+        replace=True
+    )
+
+    boot_means.append(np.mean(sample))
+
+
+
+
+
+
+
+ci_lower, ci_upper = np.percentile(
+    boot_means,
+    [2.5, 97.5]
+)
+
+print("Bootstrap Mean:", np.mean(boot_means))
+print("95% Confidence Interval:", ci_lower, ci_upper)
+
+
+
+
+
+plt.figure(figsize=(8, 5))
+
+plt.hist(
+    boot_means,
+    bins=30,
+    edgecolor='black'
+)
+
+plt.title("Bootstrap Distribution of Mean Petal Length")
+plt.xlabel("Bootstrap Mean")
+plt.ylabel("Frequency")
+
+plt.show()
+
+
+
+
+4. Theory
+
+Bootstrap resampling is a statistical technique used to estimate the sampling distribution of a statistic by repeatedly drawing samples from the original dataset with replacement.
+
+Steps
+Select the petal length values from the Iris dataset.
+Draw a random sample with replacement, keeping the same sample size as the original data.
+Calculate the mean of the selected sample.
+Repeat the process 5,000 times.
+Store all calculated means.
+Calculate the 95% confidence interval using the 2.5th and 97.5th percentiles.
+Important formula
+
+Bootstrap mean:
+
+$$ \bar{x}^{*}=\frac{1}{n}\sum_{i=1}^{n}x_i^{*} $$
+
+95% confidence interval:
+
+$$ CI=[P_{2.5},P_{97.5}] $$
+
+Here, \(P_{2.5}\) and \(P_{97.5}\) are the 2.5th and 97.5th percentiles of the bootstrap means.
+
+Applications
+Estimating confidence intervals.
+Measuring uncertainty in statistical estimates.
+Evaluating the reliability of sample statistics.
+
+
+5. Conclusion
+
+Bootstrap resampling was performed on the Iris dataset by repeatedly sampling petal length values with replacement. The bootstrap means were calculated, and the 95% confidence interval was estimated to assess the uncertainty of the mean petal length.

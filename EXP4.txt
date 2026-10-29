@@ -1,0 +1,123 @@
+1. Aim
+
+To demonstrate the Central Limit Theorem (CLT) using exponentially distributed data by generating repeated random samples, calculating their sample means, and plotting the distribution of those means.
+
+2. Dataset Link
+
+No external dataset is required. We will generate exponential data directly using NumPy, following the approach in your uploaded Exp4SML.ipynb notebook.
+
+
+CODE - 
+
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+
+# Parameters
+num_samples = 10000
+sample_size = 30
+
+# Generate exponentially distributed population data
+population = np.random.exponential(
+    scale=2.0,
+    size=num_samples * sample_size
+)
+
+
+
+
+
+sample_means = []
+
+for i in range(num_samples):
+    sample = np.random.exponential(
+        scale=2.0,
+        size=sample_size
+    )
+
+    sample_means.append(np.mean(sample))
+
+
+
+
+
+
+plt.figure(figsize=(8, 5))
+
+sns.histplot(
+    population,
+    bins=50,
+    kde=True
+)
+
+plt.title("Exponential Distribution")
+plt.xlabel("Value")
+plt.ylabel("Frequency")
+
+plt.show()
+
+
+
+
+
+
+plt.figure(figsize=(8, 5))
+
+sns.histplot(
+    sample_means,
+    bins=50,
+    kde=True
+)
+
+plt.title("Central Limit Theorem - Distribution of Sample Means")
+plt.xlabel("Sample Mean")
+plt.ylabel("Frequency")
+
+plt.show()
+
+
+
+
+
+print("Population Mean:", np.mean(population))
+print("Mean of Sample Means:", np.mean(sample_means))
+print("Theoretical Mean:", 2.0)
+
+
+
+
+4. Theory
+
+The Central Limit Theorem (CLT) states that when sufficiently large random samples are repeatedly drawn from a population, the distribution of their sample means approaches a normal distribution, regardless of the original population's distribution, provided certain conditions are satisfied.
+
+Exponential Distribution
+It is a continuous probability distribution.
+It is commonly used to model waiting times.
+Its probability density function is:
+$$ f(x)=\lambda e^{-\lambda x}, \quad x\geq 0 $$
+
+For the exponential distribution:
+
+$$ \text{Mean}=\frac{1}{\lambda} $$
+
+In this experiment, scale = 2.0, so the theoretical mean is:
+
+$$ \mu=2 $$
+Steps of CLT
+Generate exponentially distributed random data.
+Draw repeated random samples of size 30.
+Calculate the mean of each sample.
+Plot the distribution of the sample means.
+Observe how the distribution of sample means approaches a bell-shaped, approximately normal distribution.
+
+The standard error of the sample mean is:
+
+$$ SE=\frac{\sigma}{\sqrt{n}} $$
+
+where \(\sigma\) is the population standard deviation and \(n\) is the sample size.
+
+5. Conclusion
+
+The Central Limit Theorem was demonstrated using exponentially distributed data. Repeated samples were generated, their means were calculated, and the distribution of sample means was plotted to illustrate its tendency to approach a normal distribution.
