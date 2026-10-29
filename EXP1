@@ -1,0 +1,69 @@
+1. Aim
+
+To perform Exploratory Data Analysis (EDA) on customer_data.csv by visualizing numerical data using histograms, selecting numerical columns, computing a correlation matrix and plotting a correlation heatmap.
+
+
+CODE -
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+file_path = r""
+
+data = pd.read_csv(file_path)
+
+print(data.head())
+
+data.hist(figsize=(10, 8), bins=20)
+plt.tight_layout()
+plt.show()
+
+sns.histplot(data["Age"], kde=True, bins=20)
+plt.title("Age Distribution with KDE")
+plt.xlabel("Age")
+plt.ylabel("Frequency")
+plt.show()
+
+print(data.columns)
+
+numeric_data = data.select_dtypes(include="number")
+print(numeric_data.head())
+
+corr = numeric_data.corr()
+print(corr)
+
+plt.figure(figsize=(10, 6))
+sns.heatmap(corr, annot=True, cmap="coolwarm", linewidths=0.5)
+plt.title("Correlation Matrix Heatmap")
+plt.show()
+
+
+
+
+
+2. Theory
+
+Exploratory Data Analysis (EDA): EDA is the process of analyzing and visualizing a dataset to understand its characteristics, distributions and relationships between variables.
+
+Histogram: A histogram represents the frequency distribution of numerical data using bars. It helps identify the distribution, spread and skewness of data.
+
+Kernel Density Estimation (KDE): KDE estimates the probability density of a continuous variable and represents its distribution using a smooth curve.
+
+Correlation Matrix: A correlation matrix shows the correlation coefficients between pairs of numerical variables. The Pearson correlation coefficient ranges from −1 to +1.
+
++1: Perfect positive linear correlation.
+0: No linear correlation.
+−1: Perfect negative linear correlation.
+
+Heatmap: A heatmap represents numerical values using colours. It helps visualize the strength and direction of correlations between variables.
+
+Libraries used:
+
+Pandas — data loading and manipulation.
+Matplotlib — plotting graphs.
+Seaborn — statistical visualization.
+
+. Conclusion
+
+Exploratory Data Analysis was performed on customer_data.csv using Python. Histograms and KDE were used to examine numerical data distributions, while a correlation matrix and heatmap were used to analyze relationships between numerical variables.
